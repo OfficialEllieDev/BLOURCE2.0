@@ -1,10 +1,15 @@
 local module = {
     CLIENT_VAR = {
         PlayerSpeed = 35;
-        JumpHeight = 5;
+        JumpHeight = 15;
         MaxHealth = 100;
         CurrentMap = "";
         CurrentWeapon = "";
+        CurrentSaveFile = "";
+        Custom = {
+            MaxStamina = 3;
+            Stamina = 3
+        };
     };
     SERVER_VAR = {
         MaxMultiplayerHealth = 100;
@@ -14,7 +19,18 @@ local module = {
     };
     ENGINE_VAR = {
         TimeScale = 1;
-        Gravity = 135
+        Gravity = 135;
+        LVL_LOADINGCONFIG = {
+            NO_TEX = {
+                "trigger";
+                "dev_collider";
+                "ai_node";
+            }
+        };
+        BakedWeaponList = {};
+        WeaponList = {};
+        BakedMapList = {};
+
     }
 }
 
@@ -23,7 +39,7 @@ local module = {
 local LocalPlayer = game:GetService("Players").LocalPlayer
 local Root = game:GetService("ReplicatedStorage")
 local Debris = game:GetService("Debris")
-
+local InputService = game:GetService("UserInputService")
 --[[FUNCS]]
 
 --[[ENGINE FUNCS]]
@@ -48,6 +64,20 @@ function module:Startup(args)
 end
 
 --[[GAME FUNCS]]
+
+--[[
+    Bind related keys to their designated actions
+    
+]]
+
+function module:BindKeys(KeyTable:{Enum.KeyCode})
+    --[[bind commands to keys specified
+    example table:
+    {
+        [Enum.KeyCode.E] = "interact"
+    }]]
+    
+end
 
 --[[
     Plays sounds at designed point, or at GUI level (SoundService).
