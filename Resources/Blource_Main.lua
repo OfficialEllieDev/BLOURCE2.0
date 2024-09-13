@@ -6,6 +6,12 @@ local module = {
         CurrentMap = "";
         CurrentWeapon = "";
         CurrentSaveFile = "";
+        KeyBindings = {
+            [Enum.KeyCode.E] = "input_interact";
+            [Enum.KeyCode.LeftShift] = "input_dash";
+            [Enum.KeyCode.Backquote] = "input_devconsole";
+            [Enum.KeyCode.One] = "inventory"
+        };
         Custom = {
             MaxStamina = 3;
             Stamina = 3
@@ -60,7 +66,10 @@ function module:CreateGUI(guiName:string)
 end
 
 function module:Startup(args)
+    --anchors players to ensure that it doesn't fall to death lol-
     LocalPlayer.Character.PrimaryPart.Anchored = true
+    
+    
 end
 
 --[[GAME FUNCS]]
