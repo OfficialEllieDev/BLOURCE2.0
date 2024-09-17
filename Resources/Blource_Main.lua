@@ -6,11 +6,17 @@ local module = {
         CurrentMap = "";
         CurrentWeapon = "";
         CurrentSaveFile = "";
-        KeyBindings = {
-            [Enum.KeyCode.E] = "input_interact";
-            [Enum.KeyCode.LeftShift] = "input_dash";
-            [Enum.KeyCode.Backquote] = "input_devconsole";
-            [Enum.KeyCode.One] = "inventory"
+        CurrentBindingProfiles = "Default";
+        Profiles = {
+            Default = {
+
+            };
+            Keyboard = {
+
+            };
+            Controller = {
+
+            };
         };
         Custom = {
             MaxStamina = 3;
@@ -50,6 +56,11 @@ local InputService = game:GetService("UserInputService")
 
 --[[ENGINE FUNCS]]
 
+function module:Input(InputName, KeyCode)
+    --runs functions with given keycode (so that an input script can know exactly which key you have pressed)
+    
+end
+
 function module:DEVMAP(mapName:string?)
     
 end
@@ -69,7 +80,28 @@ function module:Startup(args)
     --anchors players to ensure that it doesn't fall to death lol-
     LocalPlayer.Character.PrimaryPart.Anchored = true
     
-    
+    InputService.InputBegan:Connect(function(Input: InputObject, GameProcessed: boolean)
+        if GameProcessed then
+            local keycode = Input.KeyCode
+            local id = table.find(module.CLIENT_VAR.Profiles[module.CLIENT_VAR.CurrentBindingProfiles], keycode)
+            local inputscriptname = module.CLIENT_VAR.Profiles[module.CLIENT_VAR.CurrentBindingProfiles][id]
+            local inmodule:ModuleScript = Root.Resources.Scripts.Inputs:FindFirstChild(inputscriptname)
+            if inmodule then
+                require(inmodule):OnKeyPressed(keycode)
+            end
+        end
+    end)
+    InputService.InputEnded:Connect(function(Input: InputObject, GameProcessed: boolean)
+        if GameProcessed then
+            local keycode = Input.KeyCode
+            local id = table.find(module.CLIENT_VAR.Profiles[module.CLIENT_VAR.CurrentBindingProfiles], keycode)
+            local inputscriptname = module.CLIENT_VAR.Profiles[module.CLIENT_VAR.CurrentBindingProfiles][id]
+            local inmodule:ModuleScript = Root.Resources.Scripts.Inputs:FindFirstChild(inputscriptname)
+            if inmodule then
+                require(inmodule):OnKeyPressed(keycode)
+            end
+        end
+    end)
 end
 
 --[[GAME FUNCS]]
@@ -94,7 +126,7 @@ end
 ]]
 
 function module:PlaySounds(Name:string,RollOffDistance:number,IsGUI:boolean,OriginPart:BasePart)
-    local Sound:Sound? = Root.Sounds:FindFirstChild("Sound")
+    local Sound:Sound? = Root.Sounds:FindFirstChild(Name)
     if Sound then
         if IsGUI then
             if Sound:IsA("Sound") then
