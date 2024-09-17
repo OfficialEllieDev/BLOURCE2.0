@@ -9,13 +9,13 @@ local module = {
         CurrentBindingProfiles = "Default";
         Profiles = {
             Default = {
-
+                [Enum.KeyCode.E] = "interact";
             };
             Keyboard = {
-
+                [Enum.KeyCode.E] = "interact";
             };
             Controller = {
-
+                [Enum.KeyCode.X] = "interact";
             };
         };
         Custom = {
