@@ -10,6 +10,16 @@ local module = {
         Profiles = {
             Default = {
                 [Enum.KeyCode.E] = "interact";
+                [Enum.KeyCode.LeftShift] = "dash";
+                [Enum.KeyCode.LeftControl] = "slam";
+                [Enum.KeyCode.R] = "reload";
+                [Enum.KeyCode.One] = "inventory";
+                [Enum.KeyCode.Two] = "inventory";
+                [Enum.KeyCode.Three] = "inventory";
+                [Enum.KeyCode.Four] = "inventory";
+                [Enum.KeyCode.Five] = "inventory";
+                [Enum.KeyCode.Six] = "inventory";
+                [Enum.KeyCode.A] = "quickchange"
             };
             Keyboard = {
                 [Enum.KeyCode.E] = "interact";
@@ -62,7 +72,7 @@ function module:Input(InputName, KeyCode)
 end
 
 function module:DEVMAP(mapName:string?)
-    
+    --the limited function for map loading: very limited, no save loading or anything, meant to test the most basic form of maps individually
 end
 
 function module:CreateGUI(guiName:string)
@@ -98,7 +108,7 @@ function module:Startup(args)
             local inputscriptname = module.CLIENT_VAR.Profiles[module.CLIENT_VAR.CurrentBindingProfiles][id]
             local inmodule:ModuleScript = Root.Resources.Scripts.Inputs:FindFirstChild(inputscriptname)
             if inmodule then
-                require(inmodule):OnKeyPressed(keycode)
+                require(inmodule):OnKeyReleased(keycode)
             end
         end
     end)
@@ -121,11 +131,26 @@ function module:BindKeys(KeyTable:{Enum.KeyCode})
 end
 
 --[[
+    Yield thread until correct input is given
+]]
+
+function module:WaitForInput(keycode:Enum.KeyCode)
+    local Success = false
+    repeat
+        local input = InputService.InputBegan:Wait()
+        if input.KeyCode == keycode then
+            Success = true
+            break
+        end
+    until Success == true
+end
+
+--[[
     Plays sounds at designed point, or at GUI level (SoundService).
     
 ]]
 
-function module:PlaySounds(Name:string,RollOffDistance:number,IsGUI:boolean,OriginPart:BasePart)
+function module:PlaySound(Name:string,Volume:number,RollOffDistance:number,IsGUI:boolean,OriginPart:BasePart)
     local Sound:Sound? = Root.Sounds:FindFirstChild(Name)
     if Sound then
         if IsGUI then
@@ -144,11 +169,20 @@ function module:PlaySounds(Name:string,RollOffDistance:number,IsGUI:boolean,Orig
                     S.RollOffMaxDistance = RollOffDistance
                     Debris:AddItem(S, S.TimeLength+5)
                 else
-                    warn("Sound "..Name.." was playable, but pointed OriginPart value is not ")
+                    warn("Sound "..Name.." was playable, but pointed OriginPart value is not valid.")
                 end
             end
         end
     end
+end
+
+--[[
+    Damage player by a certain amount
+]]
+
+function module:DamagePlayer(amount:number)
+    local rEvent:RemoteEvent = Root.Resources.dmgPlr
+    rEvent:FireServer(amount)
 end
 
 return module
